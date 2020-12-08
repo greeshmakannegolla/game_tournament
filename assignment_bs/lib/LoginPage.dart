@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'HomePage.dart';
 import 'constants/Stringconstants.dart';
 
 void main() {
@@ -111,7 +112,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 30),
                     RaisedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
+                      },
                       child:
                           const Text('Submit', style: TextStyle(fontSize: 20)),
                       color: (_nameValid == true && _passwordValid == true)
