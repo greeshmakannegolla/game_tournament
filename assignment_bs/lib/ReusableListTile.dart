@@ -18,8 +18,8 @@ class ReusableListTile extends StatelessWidget {
               child: Image.network(_coverUrl)),
           Row(
             children: [
-              Flexible(
-                flex: 4,
+              Expanded(
+                flex: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -39,8 +39,11 @@ class ReusableListTile extends StatelessWidget {
               ),
               Spacer(),
               Flexible(
-                child: IconButton(
-                    icon: Icon(Icons.keyboard_arrow_right), onPressed: () {}),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                      icon: Icon(Icons.keyboard_arrow_right), onPressed: () {}),
+                ),
               )
             ],
           )
