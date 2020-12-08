@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "176163893486",
+    "project_id": "assignment-bluestacks",
+    "storage_bucket": "assignment-bluestacks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176163893486:android:306a62cc4271ed009e43ff",
+        "android_client_info": {
+          "package_name": "com.app.assignment_bs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176163893486-8no6nt0tnlbj7t8vghbi732s7gk474a4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW3EceZu1u-OTky5N0ELNaIQqxAWpz3HI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176163893486-8no6nt0tnlbj7t8vghbi732s7gk474a4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

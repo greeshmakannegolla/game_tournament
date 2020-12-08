@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
@@ -12,11 +13,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List _tournamentsList = [];
+  Map<String, dynamic> _userInfo = {};
   String _cursor;
 
   @override
   initState() {
     super.initState();
+
+    _fetchUserInfo().then((value) {
+      _fetchInitialTournaments();
+    });
+  }
+
+  _fetchUserInfo() async {
+    var userInfoDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc("mtjJTpAbyU3ldfb7jKU1")
+        .get();
+
+    _userInfo = userInfoDoc.data();
+    setState(() {});
+  }
+
+  _fetchInitialTournaments() async {
     String apiUrl =
         'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all';
 
@@ -48,139 +67,147 @@ class _HomePageState extends State<HomePage> {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Image.asset(c_user, height: 80, width: 80), //get from firebase
-                Column(
-                  children: [
-                    Text("Simoni Baker"), //get from firebase
-                    Container(
-                        margin: const EdgeInsets.all(15.0),
-                        padding: const EdgeInsets.all(6.0),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blueAccent),
-                            borderRadius: BorderRadius.circular(20.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(7.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "2250",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800]),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ), //change
-                              Text("Elo rating") //change
-                            ],
-                          ),
-                        )),
-                  ],
-                )
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(18),
-                    bottomLeft: Radius.circular(18)),
-                child: Container(
-                  color: Colors.orange,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Text("34",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)), //change
-                        Text("Tournaments \n played",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 12))
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 1),
-              Container(
-                color: Colors.deepPurple,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+      body: _userInfo.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Text("09",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)), //change
-                      Text("Tournaments \n won",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 12))
+                      Image.asset(c_user, height: 80, width: 80),
+                      Column(
+                        children: [
+                          Text(_userInfo["name"]), //get from firebase
+                          Container(
+                              margin: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.blueAccent),
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(7.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      _userInfo["elorating"],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue[800]),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ), //change
+                                    Text("Elo rating")
+                                  ],
+                                ),
+                              )),
+                        ],
+                      )
                     ],
                   ),
-                ),
-              ),
-              SizedBox(width: 1),
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topRight: const Radius.circular(18),
-                  bottomRight: const Radius.circular(18),
-                ),
-                child: Container(
-                  color: Colors.deepOrange,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Text("26" + "%", //change
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        Text("Winning \n percentage",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 12))
-                      ],
-                    ),
+                  SizedBox(
+                    height: 10,
                   ),
-                ),
-              )
-            ]),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Text(
-                  "Recommended for you",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _tournamentsList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == _tournamentsList.length - 1) {
-                      _fetchMoreTournaments();
-                    }
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(18),
+                          bottomLeft: Radius.circular(18)),
+                      child: Container(
+                        color: Colors.orange,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(_userInfo["tplayed"],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                              Text("Tournaments \n played",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12))
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 1),
+                    Container(
+                      color: Colors.deepPurple,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Text(_userInfo["twon"],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                            Text("Tournaments \n won",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12))
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 1),
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topRight: const Radius.circular(18),
+                        bottomRight: const Radius.circular(18),
+                      ),
+                      child: Container(
+                        color: Colors.deepOrange,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(_userInfo["winpercentage"] + "%",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                              Text("Winning \n percentage",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12))
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ]),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text(
+                        "Recommended for you",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _tournamentsList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == _tournamentsList.length - 1) {
+                            _fetchMoreTournaments();
+                          }
 
-                    var curTournament = _tournamentsList[index];
-                    return ReusableListTile(curTournament["game_name"],
-                        curTournament["cover_url"], curTournament["name"]);
-                  }),
-            )
-          ],
-        ),
-      ),
+                          var curTournament = _tournamentsList[index];
+                          return ReusableListTile(
+                              curTournament["game_name"],
+                              curTournament["cover_url"],
+                              curTournament["name"]);
+                        }),
+                  )
+                ],
+              ),
+            ),
     ));
   }
 
