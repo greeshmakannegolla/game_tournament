@@ -26,13 +26,22 @@ class ReusableListTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _name,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Tooltip(
+                        message: _name,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 8, 0, 5),
+                          child: Text(
+                            _name,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
-                      Text(_gameName)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 6, 0, 5),
+                        child: Text(_gameName),
+                      )
                     ],
                   ),
                 ),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'HomePage.dart';
 import 'constants/Stringconstants.dart';
 
-void main() {
-  runApp(LoginPage());
-}
-
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -57,11 +55,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       TextFormField(
                         key: _nameInputKey,
+                        maxLength: 10,
                         controller: _nameController,
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                           //hintText: "Username",
                           labelText: "Username",
+
                           labelStyle: TextStyle(color: Colors.black),
                         ),
                         validator: (name) {
@@ -102,8 +102,8 @@ class _LoginPageState extends State<LoginPage> {
                             return "Please enter a password";
                           else if (_passwordController.text.length < 3)
                             return "Your password must contain atleast 3 characters.";
-                          else if (_passwordController.text.length > 10)
-                            return "Your password is too long. Password is expected to be below 10 characters.";
+                          else if (_passwordController.text.length > 11)
+                            return "Your password is too long. Password is expected to be below 11 characters.";
                           else {
                             _passwordValid = true;
                             return null;
@@ -118,11 +118,39 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 30),
                       RaisedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
+                        onPressed: () async {
+                          if ((_nameController.text == "9898989898" ||
+                                  _nameController.text == "9876543210") &&
+                              _passwordController.text == "password123") {
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool('isLoggedIn', true);
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()),
+                                (_) => false);
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Incorrect credentials"),
+                                content:
+                                    Text("Please check your username/password"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(); // dismisses only the dialog and returns nothing
+                                    },
+                                    child: Text('OK',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                         child: const Text('Submit',
                             style: TextStyle(fontSize: 20)),

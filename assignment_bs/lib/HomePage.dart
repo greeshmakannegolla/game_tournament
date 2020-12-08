@@ -1,7 +1,9 @@
+import 'package:assignment_bs/LoginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'ReusableListTile.dart';
 import 'constants/Stringconstants.dart';
 
@@ -55,34 +57,60 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white.withOpacity(0.95),
       appBar: AppBar(
         elevation: 0,
-        titleSpacing: 100,
+        //titleSpacing: 100,
         backgroundColor: Colors.white70,
-        title: Text(
-          'Flyingwolf',
-          style: TextStyle(color: Colors.black),
+        title: Center(
+          child: Text(
+            'Flyingwolf',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
         leading: IconButton(
           icon: Icon(Icons.menu_rounded, color: Colors.black),
           onPressed: () {},
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.black),
+            onPressed: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              prefs.setBool('isLoggedIn', false);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (_) => false);
+            },
+          ),
+        ],
         automaticallyImplyLeading: false,
       ),
       body: _userInfo.isEmpty
           ? Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Image.asset(c_user, height: 80, width: 80),
+                      Image.asset(c_user, height: 90, width: 80),
                       Column(
                         children: [
-                          Text(_userInfo["name"]), //get from firebase
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 14.0, 8.0, 0.0),
+                            child: Text(
+                              _userInfo["name"],
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
                           Container(
                               margin: const EdgeInsets.all(15.0),
-                              padding: const EdgeInsets.all(6.0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(6.0, 6.0, 6.0, 6.0),
                               decoration: BoxDecoration(
+                                  color: Colors.white,
                                   border: Border.all(color: Colors.blueAccent),
                                   borderRadius: BorderRadius.circular(20.0)),
                               child: Padding(
@@ -93,12 +121,14 @@ class _HomePageState extends State<HomePage> {
                                       _userInfo["elorating"],
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
+                                          fontSize: 22,
                                           color: Colors.blue[800]),
                                     ),
                                     SizedBox(
-                                      width: 5,
-                                    ), //change
-                                    Text("Elo rating")
+                                      width: 10,
+                                    ),
+                                    Text("Elo rating"),
+                                    SizedBox(width: 10)
                                   ],
                                 ),
                               )),
@@ -117,12 +147,13 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         color: Colors.orange,
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(25.0),
                           child: Column(
                             children: [
                               Text(_userInfo["tplayed"],
                                   style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                               Text("Tournaments \n played",
                                   textAlign: TextAlign.center,
@@ -137,12 +168,13 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       color: Colors.deepPurple,
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(25.0),
                         child: Column(
                           children: [
                             Text(_userInfo["twon"],
                                 style: TextStyle(
                                     color: Colors.white,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold)),
                             Text("Tournaments \n won",
                                 textAlign: TextAlign.center,
@@ -161,12 +193,13 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         color: Colors.deepOrange,
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(25.0),
                           child: Column(
                             children: [
                               Text(_userInfo["winpercentage"] + "%",
                                   style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                               Text("Winning \n percentage",
                                   textAlign: TextAlign.center,
@@ -192,17 +225,23 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: _tournamentsList.length,
+                        itemCount: _tournamentsList.length + 1,
                         itemBuilder: (BuildContext context, int index) {
-                          if (index == _tournamentsList.length - 1) {
-                            _fetchMoreTournaments();
+                          if (index == _tournamentsList.length) {
+                            if (index != 0) {
+                              _fetchMoreTournaments();
+                            }
+                            return Center(child: CircularProgressIndicator());
                           }
 
                           var curTournament = _tournamentsList[index];
-                          return ReusableListTile(
-                              curTournament["game_name"],
-                              curTournament["cover_url"],
-                              curTournament["name"]);
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                            child: ReusableListTile(
+                                curTournament["game_name"],
+                                curTournament["cover_url"],
+                                curTournament["name"]),
+                          );
                         }),
                   )
                 ],
