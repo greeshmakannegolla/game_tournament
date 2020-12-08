@@ -79,11 +79,12 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
-                                labelText: AppLocalizations.of(context)
-                                    .translate('username'),
+                                labelText: AppLocalizations.of(context).translate(
+                                    'username'), //Displays username label in the language chosen by the user
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
                               validator: (name) {
+                                //Username input validations
                                 setState(() {});
                                 _nameValid = false;
                                 if (_nameController.text.length == 0)
@@ -115,14 +116,15 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
-                                labelText: AppLocalizations.of(context)
-                                    .translate('password'),
+                                labelText: AppLocalizations.of(context).translate(
+                                    'password'), //Displays password label in the language chosen by the user
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
                               validator: (password) {
                                 setState(() {});
                                 _passwordValid = false;
-                                if (_passwordController.text.length == 0)
+                                if (_passwordController.text.length ==
+                                    0) //Password validations
                                   return "Please enter a password";
                                 else if (_passwordController.text.length < 3)
                                   return "Your password must contain atleast 3 characters.";
@@ -145,6 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: 120,
                               child: RaisedButton(
                                 onPressed: () async {
+                                  // Hardcoded user credentials
                                   if ((_nameController.text == "9898989898" ||
                                           _nameController.text ==
                                               "9876543210") &&
@@ -170,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                                             onPressed: () {
                                               Navigator.of(context,
                                                       rootNavigator: true)
-                                                  .pop(); // dismisses only the dialog and returns nothing
+                                                  .pop();
                                             },
                                             child: Text('OK',
                                                 style: TextStyle(
@@ -228,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () {
                               appLanguage.changeLanguage(Locale("ja"));
                             },
-                            child: Text('日本人',
+                            child: Text('日本人', //Japanese
                                 style: TextStyle(color: Colors.white)),
                           ),
                         )

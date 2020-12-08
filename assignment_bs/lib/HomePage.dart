@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _fetchUserInfo().then((value) {
+      //Initial population of the tournaments list to be displayed
       _fetchInitialTournaments();
     });
   }
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     var userInfoDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc("mtjJTpAbyU3ldfb7jKU1")
-        .get();
+        .get(); //Firestore query to get user details
 
     _userInfo = userInfoDoc.data();
     setState(() {});
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   _fetchInitialTournaments() async {
     String apiUrl =
-        'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all';
+        'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all'; //Hit to API for data
 
     http.get(apiUrl).then((result) {
       var jsonResponse = convert.jsonDecode(result.body);
@@ -70,11 +71,13 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.black),
+            icon:
+                Icon(Icons.logout, color: Colors.black), //Logout functionality
             onPressed: () async {
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
-              prefs.setBool('isLoggedIn', false);
+              prefs.setBool('isLoggedIn',
+                  false); //Session tracking using sharedPreferences. Used to check if the user has already logged in or not.
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
@@ -99,7 +102,8 @@ class _HomePageState extends State<HomePage> {
                             padding:
                                 const EdgeInsets.fromLTRB(8.0, 14.0, 8.0, 0.0),
                             child: Text(
-                              _userInfo["name"],
+                              _userInfo[
+                                  "name"], // Population of data from Firestore
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
@@ -258,6 +262,7 @@ class _HomePageState extends State<HomePage> {
                         shrinkWrap: true,
                         itemCount: _tournamentsList.length + 1,
                         itemBuilder: (BuildContext context, int index) {
+                          //fetch next set of tournaments
                           if (index == _tournamentsList.length) {
                             if (index != 0) {
                               _fetchMoreTournaments();
@@ -281,6 +286,7 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
+  //fetch tournaments based on cursor
   _fetchMoreTournaments() async {
     String apiUrl =
         'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all&cursor=$_cursor';
@@ -288,7 +294,8 @@ class _HomePageState extends State<HomePage> {
     var result = await http.get(apiUrl);
     var jsonResponse = convert.jsonDecode(result.body);
     _cursor = jsonResponse["data"]["cursor"];
-    _tournamentsList += jsonResponse["data"]["tournaments"];
+    _tournamentsList +=
+        jsonResponse["data"]["tournaments"]; //To load more cards on scroll
     setState(() {});
   }
 }
