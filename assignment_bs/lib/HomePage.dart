@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 import 'constants/Stringconstants.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,10 +14,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      backgroundColor: Colors.white.withOpacity(0.95),
       appBar: AppBar(
         elevation: 0,
         titleSpacing: 100,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white.withOpacity(0.5),
         title: Text(
           'Flyingwolf',
           style: TextStyle(color: Colors.black),
@@ -28,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
             Row(
@@ -70,8 +72,8 @@ class _HomePageState extends State<HomePage> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ClipRRect(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    bottomLeft: Radius.circular(12)),
+                    topLeft: Radius.circular(18),
+                    bottomLeft: Radius.circular(18)),
                 child: Container(
                   color: Colors.orange,
                   child: Padding(
@@ -111,8 +113,8 @@ class _HomePageState extends State<HomePage> {
               SizedBox(width: 1),
               ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topRight: const Radius.circular(12),
-                  bottomRight: const Radius.circular(12),
+                  topRight: const Radius.circular(18),
+                  bottomRight: const Radius.circular(18),
                 ),
                 child: Container(
                   color: Colors.deepOrange,
@@ -142,9 +144,53 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            SizedBox(height: 20),
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    child: Image.asset(
+                      c_game,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Clash of clans 1v1", //change
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text("Coc") //change
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                          icon: Icon(Icons.keyboard_arrow_right),
+                          onPressed: () {})
+                    ],
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
     ));
   }
+
+// Future<List<dynamic>> getDatafromAPI() async{
+// String apiUrl = ' http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all';
+
+// }
 }
