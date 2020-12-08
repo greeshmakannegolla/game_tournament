@@ -54,11 +54,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.white.withOpacity(0.95),
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         elevation: 0,
-        //titleSpacing: 100,
-        backgroundColor: Colors.white70,
+        backgroundColor: Colors.grey[100],
         title: Center(
           child: Text(
             'Flyingwolf',
@@ -145,7 +144,19 @@ class _HomePageState extends State<HomePage> {
                           topLeft: Radius.circular(18),
                           bottomLeft: Radius.circular(18)),
                       child: Container(
-                        color: Colors.orange,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              stops: [
+                                0.6,
+                                1
+                              ],
+                              colors: [
+                                Colors.orange,
+                                Colors.orange.withOpacity(0.6),
+                              ]),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(25.0),
                           child: Column(
@@ -166,7 +177,19 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 1),
                     Container(
-                      color: Colors.deepPurple,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                            stops: [
+                              0.5,
+                              1
+                            ],
+                            colors: [
+                              Colors.deepPurple,
+                              Colors.deepPurple.withOpacity(0.75),
+                            ]),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(25.0),
                         child: Column(
@@ -191,7 +214,15 @@ class _HomePageState extends State<HomePage> {
                         bottomRight: const Radius.circular(18),
                       ),
                       child: Container(
-                        color: Colors.deepOrange,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                Colors.deepOrange,
+                                Colors.deepOrange.withOpacity(0.65),
+                              ]),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(25.0),
                           child: Column(
