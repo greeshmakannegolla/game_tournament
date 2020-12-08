@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List _tournamentsList = [];
+  String _cursor;
 
   @override
   initState() {
@@ -22,6 +23,10 @@ class _HomePageState extends State<HomePage> {
     http.get(apiUrl).then((result) {
       var jsonResponse = convert.jsonDecode(result.body);
       _tournamentsList = jsonResponse["data"]["tournaments"];
+
+      _cursor = jsonResponse["data"]["cursor"];
+
+      setState(() {});
     });
   }
 
@@ -164,6 +169,10 @@ class _HomePageState extends State<HomePage> {
                   shrinkWrap: true,
                   itemCount: _tournamentsList.length,
                   itemBuilder: (BuildContext context, int index) {
+                    if (index == _tournamentsList.length - 1) {
+                      _fetchMoreTournaments();
+                    }
+
                     var curTournament = _tournamentsList[index];
                     return ReusableListTile(curTournament["game_name"],
                         curTournament["cover_url"], curTournament["name"]);
@@ -175,14 +184,14 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  Future<List<dynamic>> getDatafromAPI() async {
-    var cursor;
+  _fetchMoreTournaments() async {
     String apiUrl =
-        'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all&cursor=$cursor';
+        'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all&cursor=$_cursor';
 
     var result = await http.get(apiUrl);
     var jsonResponse = convert.jsonDecode(result.body);
-    cursor = jsonResponse["data"]["cursor"];
-    return jsonResponse;
+    _cursor = jsonResponse["data"]["cursor"];
+    _tournamentsList += jsonResponse["data"]["tournaments"];
+    setState(() {});
   }
 }
