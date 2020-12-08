@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'ReusableListTile.dart';
 import 'constants/Stringconstants.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,7 +11,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List _tournamentsList = [];
+
   @override
+  initState() {
+    super.initState();
+    String apiUrl =
+        'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all';
+
+    http.get(apiUrl).then((result) {
+      var jsonResponse = convert.jsonDecode(result.body);
+      _tournamentsList = jsonResponse["data"]["tournaments"];
+    });
+  }
+
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
@@ -18,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         elevation: 0,
         titleSpacing: 100,
-        backgroundColor: Colors.white.withOpacity(0.5),
+        backgroundColor: Colors.white70,
         title: Text(
           'Flyingwolf',
           style: TextStyle(color: Colors.black),
@@ -145,43 +159,15 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             SizedBox(height: 20),
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              child: Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    child: Image.asset(
-                      c_game,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Clash of clans 1v1", //change
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text("Coc") //change
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      IconButton(
-                          icon: Icon(Icons.keyboard_arrow_right),
-                          onPressed: () {})
-                    ],
-                  )
-                ],
-              ),
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _tournamentsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var curTournament = _tournamentsList[index];
+                    return ReusableListTile(curTournament["game_name"],
+                        curTournament["cover_url"], curTournament["name"]);
+                  }),
             )
           ],
         ),
@@ -189,8 +175,14 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-// Future<List<dynamic>> getDatafromAPI() async{
-// String apiUrl = ' http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all';
+  Future<List<dynamic>> getDatafromAPI() async {
+    var cursor;
+    String apiUrl =
+        'http://tournaments-dot-game-tv-prod.uc.r.appspot.com/tournament/api/tournaments_list_v2?limit=10&status=all&cursor=$cursor';
 
-// }
+    var result = await http.get(apiUrl);
+    var jsonResponse = convert.jsonDecode(result.body);
+    cursor = jsonResponse["data"]["cursor"];
+    return jsonResponse;
+  }
 }
